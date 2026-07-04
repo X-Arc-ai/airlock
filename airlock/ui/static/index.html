@@ -6,93 +6,97 @@
 <title>Airlock — live screen</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%9B%A1%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="/static/style.css">
+<script>
+(function(){
+  try{
+    var s = localStorage.getItem('airlock-theme');
+    document.documentElement.setAttribute('data-theme', s === 'dark' ? 'dark' : 'light');
+  }catch(e){
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
 </head>
 <body>
 
-<div id="flash" aria-hidden="true">
-  <div class="flash-stamp">
-    <span class="flash-word">QUARANTINED</span>
-    <span class="flash-family" id="flash-family"></span>
+<button id="themeToggle" type="button"><span class="glyph"></span>theme</button>
+
+<div class="app">
+  <!-- top bar -->
+  <div class="app-top">
+    <span class="wordmark"><span class="mark"></span>AIRLOCK</span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span id="stateDot" style="width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;animation:alkBreath 3s ease-in-out infinite"></span>
+      <span id="stateLabel" style="font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)">Live</span>
+    </div>
+    <div class="seg-wrap">
+      <span class="seg" id="segClear">All-clear</span>
+      <span class="seg on" id="segLive">Live</span>
+      <span class="seg" id="segReplay">Replay</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;margin-left:auto">
+      <span class="seal"><span class="sq"></span>Sealed · 0 pkt out</span>
+      <span style="width:1px;height:16px;background:var(--hairline-strong)"></span>
+      <span class="metarow" style="letter-spacing:.12em;text-transform:uppercase"><span id="blockedToday" style="color:var(--ink);font-weight:500">0</span> blocked today</span>
+    </div>
+  </div>
+
+  <div class="app-body">
+    <!-- FEED -->
+    <div class="app-feed">
+      <div class="shead" style="margin-bottom:20px">
+        <div class="stitle">Live feed<span class="sub" id="feedSub">watching</span></div>
+        <div class="smeta" id="feedMeta">01 / events</div>
+      </div>
+
+      <div id="feedAllClear" style="display:none;padding:72px 20px;flex-direction:column;align-items:center;text-align:center">
+        <div class="watchmark"><span class="r1"></span><span class="r2"></span><span class="r3"></span></div>
+        <div style="font-family:var(--serif);font-size:23px;letter-spacing:-.012em;line-height:1.3;color:var(--ink);max-width:24ch;margin-top:26px">Watching. Nothing has tried to get through</div>
+        <div class="seal" style="margin-top:20px;font-size:11px"><span class="sq"></span>Sealed · offline · 0 packets out</div>
+        <div class="metarow" id="allClearMeta" style="margin-top:12px;font-size:10.5px;color:var(--mute-soft)">last screened --:-- · 0 clean today</div>
+      </div>
+
+      <div id="feedRows"></div>
+    </div>
+
+    <!-- RAIL -->
+    <div class="app-rail">
+      <div style="padding:22px 22px;border-bottom:1px solid var(--hairline)">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px">
+          <span style="font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink)">Sources &amp; Trust Replay</span>
+          <span id="railState" style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-text)">LIVE</span>
+        </div>
+
+        <input type="range" class="scrub" id="scrubRange" min="0" max="100" step="0.5" value="100">
+        <div style="display:flex;justify-content:space-between;margin-top:9px">
+          <span class="metarow" id="scrubLeft" style="font-size:9.5px;color:var(--mute-soft)">first seen --:--</span>
+          <span class="metarow" id="scrubHint" style="font-size:9.5px;color:var(--mute-soft)">drag to rewind · live</span>
+        </div>
+
+        <div id="sourcesList" style="margin-top:20px;display:flex;flex-direction:column;gap:11px"></div>
+      </div>
+
+      <div style="padding:22px 22px;border-bottom:1px solid var(--hairline)">
+        <div style="font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink);margin-bottom:15px">Quarantine <span id="qCount" style="color:var(--mute);font-weight:400;font-size:12px">0 held</span></div>
+        <div class="metarow" id="qEmpty" style="font-size:11px;color:var(--mute-soft)">Nothing held at this moment</div>
+        <div id="qList" style="display:flex;flex-direction:column;gap:12px"></div>
+      </div>
+
+      <div style="padding:22px 22px">
+        <div style="font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink);margin-bottom:13px">Policy</div>
+        <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute-soft);margin-bottom:8px">denied paths</div>
+        <div id="policyChips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-status">
+    <span class="seal" style="font-size:10px"><span class="sq"></span>sealed</span>
+    <span class="metarow" style="font-size:10px;color:var(--mute-soft)">0 packets left this device</span>
+    <span style="flex:1"></span>
+    <span class="metarow" id="statusModel" style="font-size:10px;color:var(--mute-soft)">gemma3:12b-it-qat · airlock v0.1</span>
   </div>
 </div>
-
-<header id="topbar">
-  <div class="brand">
-    <svg class="mark" width="22" height="24" viewBox="0 0 24 26" fill="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="shield-g" x1="0" y1="0" x2="24" y2="26">
-          <stop offset="0" stop-color="#6ea8ff"/><stop offset="1" stop-color="#34d399"/>
-        </linearGradient>
-      </defs>
-      <path d="M12 1.5 L21.5 5.2 V12 C21.5 18.6 17.3 22.9 12 24.5 C6.7 22.9 2.5 18.6 2.5 12 V5.2 Z"
-            stroke="url(#shield-g)" stroke-width="1.8" stroke-linejoin="round"/>
-      <circle cx="12" cy="11" r="2.4" fill="url(#shield-g)"/>
-      <path d="M12 13 V17.5" stroke="url(#shield-g)" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-    <span class="wordmark">AIRLOCK</span>
-    <span class="tagline">on-device agent firewall</span>
-  </div>
-  <div class="stats">
-    <div class="stat">
-      <span class="stat-num" id="n-screened">0</span>
-      <span class="stat-label">screened</span>
-    </div>
-    <div class="stat stat-red">
-      <span class="stat-num" id="n-quarantined">0</span>
-      <span class="stat-label">quarantined</span>
-    </div>
-    <div class="conn" id="conn">
-      <span class="dot"></span><span id="conn-label">connecting</span>
-    </div>
-  </div>
-</header>
-
-<main id="layout">
-
-  <section id="feed-col">
-    <div class="col-head">
-      <h2>Event feed</h2>
-      <span class="hint">every verdict, live — newest first</span>
-    </div>
-    <div id="feed">
-      <div class="empty" id="feed-empty">Waiting for events&hellip; route your agent through Airlock.</div>
-    </div>
-  </section>
-
-  <aside id="rail">
-
-    <section class="panel" id="panel-quarantine">
-      <div class="panel-head">
-        <h3>Quarantine</h3>
-        <span class="count-badge" id="q-count">0</span>
-      </div>
-      <div class="panel-body" id="q-list"><div class="empty">Nothing captured.</div></div>
-    </section>
-
-    <section class="panel" id="panel-sources">
-      <div class="panel-head">
-        <h3>Sources</h3>
-        <span class="asof-tag hidden" id="asof-tag"></span>
-      </div>
-      <div class="panel-body" id="src-list"><div class="empty">No sources yet.</div></div>
-      <div class="replay">
-        <div class="replay-row">
-          <span class="replay-label">Trust replay</span>
-          <button id="live-btn" class="live-btn is-live" type="button">LIVE</button>
-        </div>
-        <input type="range" id="replay-slider" min="0" max="1000" value="1000" aria-label="trust replay time">
-        <div class="replay-ts" id="replay-ts">now</div>
-      </div>
-    </section>
-
-    <section class="panel" id="panel-policy">
-      <div class="panel-head"><h3>Policy</h3></div>
-      <div class="panel-body" id="policy-body"><div class="empty">Loading&hellip;</div></div>
-    </section>
-
-  </aside>
-
-</main>
 
 <script src="/static/app.js"></script>
 </body>
