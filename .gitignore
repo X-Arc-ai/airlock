@@ -1,7 +1,10 @@
-.venv/
-__pycache__/
+*.db
+*.db-shm
+*.db-wal
+*.log
 *.pyc
 .env
-*.db
-bench/datasets/
 .mitmproxy/
+.venv/
+__pycache__/
+bench/datasets/
