@@ -1,0 +1,10 @@
+mitmproxy>=12
+fastapi>=0.139
+uvicorn[standard]>=0.30
+httpx>=0.28
+typer>=0.12
+sse-starlette>=2
+pytest>=8
+datasets>=2
+pywebview>=5 ; sys_platform == "darwin"
+rumps>=0.4 ; sys_platform == "darwin"
