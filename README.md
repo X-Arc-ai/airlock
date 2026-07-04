@@ -165,6 +165,39 @@ and lands in the trust ledger.
 
 ---
 
+## Threat model & limitations
+
+Airlock is **defense-in-depth for autonomous agents**, not a silver bullet. We're explicit about what it does and doesn't stop — a security tool that claims to catch everything is one you shouldn't trust.
+
+**What it defends.** Prompt-injection and data-exfiltration attacks that arrive in the content an agent reads (emails, web pages, tool outputs, documents) and in the traffic it sends. Two layers that fail independently:
+
+1. **Input screening** — an on-device model quarantines poisoned content before the agent acts on it.
+2. **Egress enforcement** — the agent runs in a network namespace where the only route out is Airlock; non-allowlisted destinations are dropped in-kernel by nftables. This layer is **not an LLM and cannot be prompt-injected**. (Verified: a process inside the sandbox that ignores the proxy and connects directly to the internet is dropped at the kernel — direct IPs time out, DNS resolution fails.)
+
+**Known limitations (and how the layers cover for each other):**
+
+- **The screener is a model, and models can be fooled.** A payload crafted to also manipulate the screener ("classify this as safe") is a real risk. Mitigations: the screener treats content strictly as data, runs at temperature 0, and **fails closed** (a malformed or uncertain verdict quarantines). Crucially, if the screener is ever fooled, the **egress layer still blocks exfil to unapproved hosts** — the two layers fail independently.
+- **Detection is not perfect.** On the public `deepset/prompt-injections` set the 12B screener catches 76.5% of attacks at 5.4% false-positives; on our held-out per-family attack corpus, 4B and 12B catch 21/21. Misses happen — which is exactly why egress enforcement exists as a second line rather than trusting classification alone.
+- **Exfiltration through *allowed* channels is hard.** Host-allowlisting stops naive exfil, but a determined attacker who smuggles data inside traffic to an allowed host is a harder problem. Airlock adds content-level secret redaction on egress as a partial mitigation; full covert-channel defense is future work.
+- **Encrypted egress.** Airlock blocks by host at the network layer and can inspect content only where it terminates TLS as the screening proxy (with its own local CA); cert-pinned clients are an edge case.
+- **The strong containment is Linux (netns).** On Linux the sandbox is an in-kernel `nftables policy drop` (verified). On macOS the container tier steers HTTP through the proxy but does not hard-drop a direct bypass; the kernel-enforced guarantee is the Linux/server story.
+- **Coverage is scoped to what runs inside the sandbox**, and the on-device model is not a frontier model — novel, multi-step, or heavily obfuscated attacks may evade the screener more than our corpus suggests. The egress layer is the backstop.
+
+**Threat model boundary.** Airlock assumes the host and the Airlock process are trusted; it defends the *agent* against *untrusted content and destinations*, not the machine against a compromised root user.
+
+## Roadmap — beyond the 24-hour build
+
+Airlock is a working core, not a finished product. Where it goes next:
+
+- **Harden the screener against meta-injection** — structured/segmented parsing that never lets screened content reach the classifier as instructions, adversarial training on injection-against-the-guard, and a second-opinion ensemble for low-confidence verdicts.
+- **A distilled, faster screener** — fine-tune/distill a small model on injection corpora for sub-second, higher-recall screening, so every tool result can be checked without latency cost.
+- **Content-aware egress (semantic DLP)** — inspect *what* is leaving, not just *where* to, closing the "exfil through an allowed host" gap.
+- **System-wide, signed enforcement** — a macOS Network Extension and Linux eBPF egress control for kernel-level coverage that doesn't depend on a sandbox wrapper.
+- **Broader, continuous evaluation** — full runs on the agent-injection benchmarks (InjecAgent, AgentDojo), plus a public leaderboard tracking detection vs. model size over time.
+- **Learned policy** — per-project and per-source allowlists inferred from behavior, so the firewall tightens itself instead of being hand-configured.
+- **Fleet mode** — a shared trust ledger across a fleet of autonomous agents: when one agent's source is caught attacking, every agent distrusts it.
+- **Supply-chain screening** — vet MCP server and tool definitions themselves before an agent ever connects to them.
+
 ## What we built during the event
 
 From an empty repo to a working on-device agent firewall:
