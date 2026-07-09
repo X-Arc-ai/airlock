@@ -321,3 +321,9 @@ airlock/
 bench/             one-command benchmark + RESULTS.md
 corpus/            held-out attack payloads
 ```
+
+---
+
+## License
+
+Apache 2.0. See `LICENSE`.
