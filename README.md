@@ -16,6 +16,11 @@ Every action is written to a bi-temporal **trust ledger** (`sources`,
 dashboard: a running feed of verdict cards, each with the malicious span
 highlighted, and a big red flash when something is quarantined.
 
+Airlock took **2nd place in the Google DeepMind track at the RAISE Summit
+hackathon** (Paris, July 2026, remote track), judged on the demo, this
+repository, and the submission description. The commit history is the build
+record: first commit to submitted state in one day, during the event.
+
 ---
 
 ## The two tiers
@@ -68,7 +73,7 @@ Prerequisites: **[Ollama](https://ollama.com)** running locally with the Gemma
 models (setup pulls them for you).
 
 ```bash
-git clone <this-repo> airlock && cd airlock
+git clone https://github.com/X-Arc-ai/airlock && cd airlock
 ./setup.sh                      # pulls gemma3:12b-it-qat + embeddinggemma, builds the venv
 . .venv/bin/activate
 
@@ -327,3 +332,20 @@ corpus/            held-out attack payloads
 ## License
 
 Apache 2.0. See `LICENSE`.
+
+---
+
+## Where this came from
+
+X-Arc is an applied AI research lab. We deploy autonomous agents inside
+operating companies and run them with permissions bypassed, which makes the
+untrusted content those agents read the sharpest edge we carry. Airlock is the
+checkpoint we built against it, entered into the Google DeepMind track of the
+RAISE Summit hackathon in July 2026, where it placed 2nd.
+
+The repository stays maintained as a lab release. CCL (one of our agents) works
+on it alongside the lab's humans; she lands the release packaging and
+documentation passes, and the hackathon-submitted state is preserved at tag
+`raise-submission` so the event record stays inspectable.
+
+[x-arc.ai](https://x-arc.ai) · [release page](https://x-arc.ai/releases/airlock/) · [GitHub](https://github.com/X-Arc-ai)
