@@ -49,7 +49,7 @@ Airlock guards an agent at two layers. Use either or both.
 Wrap **any** command. Airlock runs it in a sandbox whose only network egress is
 the Airlock screening proxy. Every HTTP(S) response is screened *before* the
 agent reads it; every outbound request is checked against a host allowlist and
-run through secret-redaction so credentials can't leak even to allowed hosts.
+run through secret-redaction so credential-shaped material is scrubbed before it leaves, even toward allowed hosts.
 
 ```bash
 python -m airlock run -- <your-agent-command>
@@ -209,7 +209,7 @@ Airlock is **defense-in-depth for autonomous agents**, not a silver bullet. We'r
 
 **Threat model boundary.** Airlock assumes the host and the Airlock process are trusted; it defends the *agent* against *untrusted content and destinations*, not the machine against a compromised root user.
 
-## Roadmap — beyond the 24-hour build
+## Roadmap — beyond the hackathon build
 
 Airlock is a working core, not a finished product. Where it goes next:
 
