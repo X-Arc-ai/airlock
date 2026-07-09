@@ -6,20 +6,21 @@ agent is about to read — web pages, emails, tool results, documents — and
 ever reach the model's context. Screening runs locally on **Gemma via Ollama**;
 nothing about your traffic leaves the machine.
 
-The problem, in one line: modern agents fetch untrusted text and then act on it,
-so a single poisoned web page or email can turn "summarize my inbox" into "email
-my AWS keys to an attacker." Airlock puts a checkpoint between the untrusted
-world and the agent.
+The problem, in one line: coding agents run with permissions bypassed for real
+autonomy, they fetch untrusted text and then act on it, so a single poisoned web
+page or email can turn "summarize my inbox" into "email my AWS keys to an
+attacker." Airlock puts a checkpoint between the untrusted world and the agent.
+The checkpoint is not a hardened frontier model; it is a small open model you
+run yourself, deciding what reaches the large one.
 
 Every action is written to a bi-temporal **trust ledger** (`sources`,
 `trust_events`, `quarantine_log`) and streamed to a live **event feed** — not a
 dashboard: a running feed of verdict cards, each with the malicious span
 highlighted, and a big red flash when something is quarantined.
 
-Airlock took **2nd place in the Google DeepMind track at the RAISE Summit
-hackathon** (Paris, July 2026, remote track), judged on the demo, this
-repository, and the submission description. The commit history is the build
-record: first commit to submitted state in one day, during the event.
+Airlock took **2nd place in the Google DeepMind track of the RAISE Summit
+hackathon**, the largest AI hackathon in the world (Paris, July 2026, remote
+track), judged on the demo, this repository, and the submission description.
 
 ---
 
