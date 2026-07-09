@@ -1,6 +1,22 @@
-# Airlock
+<p align="center">
+  <img src="https://raw.githubusercontent.com/X-Arc-ai/airlock/main/assets/hero.svg" alt="airlock" width="700">
+</p>
 
-**An on-device firewall for AI agents.** Airlock screens the untrusted content an
+<p align="center">
+  <strong>An on-device firewall for AI agents.</strong><br>
+  Screens what the agent reads. Nothing leaves the machine.
+</p>
+
+<p align="center">
+  <a href="https://x-arc.ai/notes/deepmind-raise/"><img src="https://img.shields.io/badge/Google%20DeepMind%20track-2nd%20place-4ade80" alt="2nd place, Google DeepMind track, RAISE Summit hackathon"></a>
+  <a href="https://github.com/X-Arc-ai/airlock/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-4ade80" alt="License"></a>
+  <img src="https://img.shields.io/badge/python-3.11+-4ade80" alt="Python 3.11+">
+  <a href="https://x-arc.ai"><img src="https://img.shields.io/badge/by-X--Arc-4ade80" alt="X-Arc"></a>
+</p>
+
+---
+
+Airlock screens the untrusted content an
 agent is about to read — web pages, emails, tool results, documents — and
 *quarantines* prompt-injection and data-exfiltration attacks **before** they
 ever reach the model's context. Screening runs locally on **Gemma via Ollama**;
@@ -87,6 +103,8 @@ python -m airlock ui            # http://127.0.0.1:8787
 # 3) sandbox any agent behind the screening proxy
 python -m airlock run -- curl -s https://some-untrusted-site.example/page
 ```
+
+<p align="center"><img src="https://raw.githubusercontent.com/X-Arc-ai/airlock/main/assets/demo-screen.svg" alt="airlock screen verdict" width="640"></p>
 
 Prefer Docker? The image is arch-neutral (builds on x86_64 **and** Apple M1);
 Ollama stays on the host:
