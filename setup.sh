@@ -4,7 +4,7 @@
 #   pull the Gemma models into Ollama  ->  create/refresh the venv  ->
 #   install requirements  ->  print how to run.
 #
-# Works on the Hetzner box (Linux/x86_64) and on Apple Silicon (M1/arm64).
+# Works on Linux/x86_64 and on Apple Silicon (M1/arm64).
 # Re-running only does the work that is still missing.
 set -euo pipefail
 

@@ -61,7 +61,7 @@ native window + rumps menubar (🛡 + block count) on mac; else open browser.
 
 ## bench/run_eval.py
 Load deepset/prompt-injections (HF) + corpus/ held-out; sweep `--models gemma3:{1b,4b,12b,27b}-it-qat`;
-compute TPR/FPR/precision/F1 + per-family; write `bench/RESULTS.md` (grove format). One-command repro.
+compute TPR/FPR/precision/F1 + per-family; write `bench/RESULTS.md` (one table, TPR/FPR/precision/F1 per model size). One-command repro.
 
 ## corpus/payloads.jsonl
 15+ lines {text, family, label:1} across families: direct-override, base64-obfuscated,

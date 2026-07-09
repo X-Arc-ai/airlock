@@ -1,5 +1,5 @@
 import os
-# WHERE gemma runs (hosted / hetzner / M1) and WHICH size — the two knobs.
+# WHERE gemma runs (hosted / remote Linux box / local Mac) and WHICH size — the two knobs.
 MODEL     = os.environ.get("AIRLOCK_MODEL", "gemma3:12b-it-qat")
 MODEL_URL = os.environ.get("AIRLOCK_MODEL_URL", "http://127.0.0.1:11434")
 EMBED_MODEL = os.environ.get("AIRLOCK_EMBED_MODEL", "embeddinggemma")

@@ -8,8 +8,8 @@ desktop experience:
 * **macOS** — a ``rumps`` menubar item shows the shield and a *live block
   count* (🛡 3) that ticks up every time Airlock quarantines something, plus a
   native ``pywebview`` window onto the feed. The Mac-only libraries are imported
-  **only** on ``darwin`` so this file imports and parses cleanly on Linux / the
-  Hetzner box.
+  **only** on ``darwin`` so this file imports and parses cleanly on Linux
+  (e.g. a remote Linux box).
 * **everything else** (Linux server, Docker) — there is no menubar, so we start
   the feed server and print the ``http://127.0.0.1:<port>`` URL to open in a
   browser. This is the path used on the demo box.
