@@ -8,8 +8,8 @@ desktop experience:
 * **macOS** — a ``rumps`` menubar item shows the shield and a *live block
   count* (🛡 3) that ticks up every time Airlock quarantines something, plus a
   native ``pywebview`` window onto the feed. The Mac-only libraries are imported
-  **only** on ``darwin`` so this file imports and parses cleanly on Linux / the
-  Hetzner box.
+  **only** on ``darwin`` so this file imports and parses cleanly on Linux
+  (e.g. a remote Linux box).
 * **everything else** (Linux server, Docker) — there is no menubar, so we start
   the feed server and print the ``http://127.0.0.1:<port>`` URL to open in a
   browser. This is the path used on the demo box.
@@ -29,8 +29,8 @@ import threading
 import time
 import webbrowser
 
-try:  # normal package import
-    from .. import config
+try:  # repo root (or installed package) already on sys.path
+    from airlock import config
 except ImportError:  # executed as a plain script: `python airlock/ui/desktop.py`
     import os
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(
@@ -53,7 +53,7 @@ def serve_in_background() -> threading.Thread:
     """
     def _serve() -> None:
         import uvicorn
-        from .server import app as ui_app  # local import: keep module import light
+        from airlock.ui.server import app as ui_app  # local import: keep module import light
         uvicorn.run(ui_app, host=UI_HOST, port=config.UI_PORT, log_level="warning")
 
     t = threading.Thread(target=_serve, name="airlock-ui", daemon=True)

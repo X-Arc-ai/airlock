@@ -1,6 +1,6 @@
 # Airlock — on-device firewall for AI agents.
 #
-# Arch-neutral: python:3.12-slim builds on x86_64 (Hetzner) and arm64 (Apple M1)
+# Arch-neutral: python:3.12-slim builds on x86_64 and arm64 (Apple M1)
 # with no changes. The image carries the Airlock app + screening proxy only.
 #
 # Gemma runs OUTSIDE the container in Ollama (it needs the host GPU/Metal). The
