@@ -78,7 +78,7 @@
   <text x="590" y="96" text-anchor="middle" class="brand">airlock</text>
   <text x="590" y="122" text-anchor="middle" class="tagline">on-device agent firewall</text>
 
-  <text x="509" y="162" class="prompt-dim">$ <tspan class="prompt-cmd">airlock run -- claude</tspan></text>
+  <text x="480" y="162" class="prompt-dim">$ <tspan class="prompt-cmd">python -m airlock run -- claude</tspan></text>
 
   <text x="509" y="188" class="verdict">quarantine &#183; span cited</text>
   <text x="509" y="208" class="verdict">nothing leaves the machine</text>
